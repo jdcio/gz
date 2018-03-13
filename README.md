@@ -1,4 +1,4 @@
-Gzip Handler
+Gz
 ============
 
 This is a tiny Go package which wraps HTTP handlers to transparently gzip the
@@ -9,7 +9,7 @@ when that's undesirable.
 
 ## Usage
 
-Call `GzipHandler` with any handler (an object which implements the
+Call `Gz` with any handler (an object which implements the
 `http.Handler` interface), and it'll return a new handler which gzips the
 response. For example:
 
@@ -19,7 +19,7 @@ package main
 import (
 	"io"
 	"net/http"
-	"github.com/NYTimes/gziphandler"
+	"github.com/jdcio/gz"
 )
 
 func main() {
@@ -28,25 +28,9 @@ func main() {
 		io.WriteString(w, "Hello, World")
 	})
 
-	withGz := gziphandler.GzipHandler(withoutGz)
+	withGz := gz.Handler(withoutGz)
 
 	http.Handle("/", withGz)
 	http.ListenAndServe("0.0.0.0:8000", nil)
 }
 ```
-
-
-## Documentation
-
-The docs can be found at [godoc.org][docs], as usual.
-
-
-## License
-
-[Apache 2.0][license].
-
-
-
-
-[docs]:     https://godoc.org/github.com/nytimes/gziphandler
-[license]:  https://github.com/nytimes/gziphandler/blob/master/LICENSE.md

@@ -1,4 +1,4 @@
-package gziphandler
+package gz
 
 import (
 	"bufio"
@@ -186,7 +186,7 @@ func (w *GzipResponseWriter) Close() error {
 			_, writeErr := w.ResponseWriter.Write(w.buf)
 			// Returns the error if any at write.
 			if writeErr != nil {
-				return fmt.Errorf("gziphandler: write to regular responseWriter at close gets error: %q", writeErr.Error())
+				return fmt.Errorf("gz: write to regular responseWriter at close gets error: %q", writeErr.Error())
 			}
 		}
 		return nil
@@ -252,10 +252,10 @@ func NewGzipLevelHandler(level int) (func(http.Handler) http.Handler, error) {
 // NewGzipLevelAndMinSize behave as NewGzipLevelHandler except it let the caller
 // specify the minimum size before compression.
 func NewGzipLevelAndMinSize(level, minSize int) (func(http.Handler) http.Handler, error) {
-	return GzipHandlerWithOpts(CompressionLevel(level), MinSize(minSize))
+	return HandlerWithOpts(CompressionLevel(level), MinSize(minSize))
 }
 
-func GzipHandlerWithOpts(opts ...option) (func(http.Handler) http.Handler, error) {
+func HandlerWithOpts(opts ...option) (func(http.Handler) http.Handler, error) {
 	c := &config{
 		level:   gzip.DefaultCompression,
 		minSize: DefaultMinSize,
@@ -389,10 +389,10 @@ func ContentTypes(types []string) option {
 	}
 }
 
-// GzipHandler wraps an HTTP handler, to transparently gzip the response body if
+// Handler wraps an HTTP handler, to transparently gzip the response body if
 // the client supports it (via the Accept-Encoding header). This will compress at
 // the default compression level.
-func GzipHandler(h http.Handler) http.Handler {
+func Handler(h http.Handler) http.Handler {
 	wrapper, _ := NewGzipLevelHandler(gzip.DefaultCompression)
 	return wrapper(h)
 }
